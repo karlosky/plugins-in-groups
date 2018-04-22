@@ -21,10 +21,15 @@ if ( !class_exists( 'PIG_Plugin') ) {
             add_action( 'pre_current_active_plugins', array( $this, 'select_group' ) );
             add_filter( 'plugin_row_meta', array( $this, 'plugin_links' ), 10, 2 );
             //ajax functions
-            add_action( 'wp_ajax_pig_get_allowed_groups', array( $this, 'pig_get_allowed_groups' ) );
+            add_action( 'wp_ajax_assign_to_group', array( $this, 'assign_to_group' ) );
         }
         
-        public function pig_get_allowed_groups() {
+        
+        /*
+        * Ajax function.
+        * Add plugin to the group
+        */
+        public function assign_to_group() {
             $groups = unserialize( get_option( 'pig_groups' ) );
             $plugin_file = sanitize_text_field( $_POST['plugin-file'] );
             $selected_group = sanitize_text_field( $_POST['selected-group'] );
@@ -41,6 +46,9 @@ if ( !class_exists( 'PIG_Plugin') ) {
             wp_send_json_success( $return );
         }
         
+        /*
+        * Add JS script on the backend
+        */
         public function add_scripts() {
             wp_enqueue_script( 'pig-script', plugin_dir_url( __FILE__ ) . 'admin/js/pig-script.js', array( 'jquery' ) );
         }

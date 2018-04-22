@@ -28,7 +28,7 @@ jQuery(document).ready(function() {
     jQuery('.pig-select-group').on('change', function () {
         var plugin_file= jQuery(this).attr('data-plugin-file');
         var data = {
-			'action': 'pig_get_allowed_groups',
+			'action': 'assign_to_group',
 			'plugin-file': plugin_file,
             'selected-group': jQuery(this).val()
 		};
