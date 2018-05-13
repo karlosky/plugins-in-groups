@@ -22,6 +22,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
             add_filter( 'plugin_row_meta', array( $this, 'plugin_links' ), 10, 2 );
             //ajax functions
             add_action( 'wp_ajax_assign_to_group', array( $this, 'assign_to_group' ) );
+            add_action( 'wp_ajax_reassign_from_group', array( $this, 'reassign_from_group' ) );
         }
         
         
@@ -47,10 +48,34 @@ if ( !class_exists( 'PIG_Plugin') ) {
         }
         
         /*
+        * Ajax function.
+        * Remove plugin from the group
+        */
+        public function reassign_from_group() {
+            $groups = unserialize( get_option( 'pig_groups' ) );
+            $plugin_file = sanitize_text_field( $_POST['plugin-file'] );
+            $selected_group = sanitize_text_field( $_POST['selected-group'] );
+            
+            $plugin_groups = array();
+            $plugin_groups = unserialize( get_option( 'pig_' . $plugin_file ) );
+            $new_groups = array();
+            foreach ( $plugin_groups as $group ) {
+                if ( $group != $selected_group ) {
+                    $new_groups[] = $group; 
+                }
+            }
+            update_option( 'pig_' . $plugin_file, serialize( $new_groups ) );
+            $current_groups = unserialize( get_option( 'pig_' . $plugin_file ) );
+            $return['all-groups'] = $groups;
+            $return['selected-groups'] = $current_groups;
+            wp_send_json_success( $return );
+        }
+        
+        /*
         * Add JS script on the backend
         */
         public function add_scripts() {
-            wp_enqueue_script( 'pig-script', plugin_dir_url( __FILE__ ) . 'admin/js/pig-script.js', array( 'jquery' ) );
+            wp_enqueue_script( 'pig-script', plugin_dir_url( __FILE__ ) . 'admin/js/pig-script.js', array( 'jquery' ), time() );
         }
         
         
@@ -138,7 +163,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
             $groups_list = '';
             if ( $current_groups ) {
                 foreach ( $current_groups as $group ) {
-                    $groups_list .= '<span><a id="post_tag-check-num-0" class="ntdelbutton" tabindex="0">X</a>&nbsp' . $group . '</span>';
+                    $groups_list .= '<span class="pig-reassign"><a id="post_tag-check-num-0" class="ntdelbutton pig-reassign" tabindex="0" data-pig-group="' . $group . '" data-pig-plugin="' . $file . '">X</a>&nbsp' . $group . '</span>';
                 }
             }
             $new_links = array(
