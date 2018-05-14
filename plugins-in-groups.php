@@ -23,6 +23,8 @@ if ( !class_exists( 'PIG_Plugin') ) {
             //ajax functions
             add_action( 'wp_ajax_assign_to_group', array( $this, 'assign_to_group' ) );
             add_action( 'wp_ajax_reassign_from_group', array( $this, 'reassign_from_group' ) );
+            
+            add_filter( 'all_plugins', array( $this, 'filter_plugins' ) );
         }
         
         
@@ -176,6 +178,26 @@ if ( !class_exists( 'PIG_Plugin') ) {
             
             return $links;
         } 
+        
+        /*
+        * Filter plugins on the plugins list
+        */
+        public function filter_plugins( $all_plugins ) {
+            if ( isset( $_GET['group'] ) ) {
+                $active_group = sanitize_text_field( $_GET['group'] );
+                $filtered_plugins = array();
+                foreach ( $all_plugins as $name => $plugin ) {
+                    $current_plugin_groups = unserialize( get_option( 'pig_' . $name ) );
+                    foreach ( $current_plugin_groups as $plugin_group ) {
+                        if ( $plugin_group == $active_group ) {
+                            $filtered_plugins[$name] = $plugin;
+                        }
+                    }
+                }
+                return $filtered_plugins;
+            }
+            return $all_plugins;
+        }
     }
     
     /*

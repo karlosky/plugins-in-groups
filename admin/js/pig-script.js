@@ -70,10 +70,17 @@ jQuery(document).ready(function() {
 
     });
     
+    /*
+    * 
+    *
+    */
+    jQuery('#pig_plugin_group').on('change', function () {
+        var selected = jQuery(this).val();
+        jQuery(location).attr('href','plugins.php?group=' + selected);
+    });
     
     /* @todo:
     * 1. Hide the plugins that have not the current group assigned to.
-    * 2. Remove the group grom the plugin (X link).
     */
     
 });
