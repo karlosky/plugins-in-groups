@@ -1,6 +1,7 @@
 <?php
 /*
   Plugin Name: Plugins In Groups
+  Description: Keep your plugins in the groups. Sort them by tags. Keep your plugins page clear and manage them in bulk.
   Version: 0.0.1
   Description: 
   Author: Karol Sawka
