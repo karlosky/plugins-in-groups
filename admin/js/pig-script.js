@@ -85,7 +85,11 @@ jQuery(document).ready(function() {
     */
     jQuery('#pig_plugin_group').on('change', function () {
         var selected = jQuery(this).val();
-        jQuery(location).attr('href','plugins.php?group=' + selected);
+        if ( selected == 'all' ) {
+            jQuery(location).attr('href','plugins.php');
+        } else {
+            jQuery(location).attr('href','plugins.php?group=' + selected);
+        }
     });
     
 });

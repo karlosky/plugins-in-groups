@@ -89,13 +89,14 @@ if ( !class_exists( 'PIG_Plugin') ) {
         */
         public function select_group( $plugins_all ) {
             $groups = unserialize( get_option( 'pig_groups' ) );
+            $selected = isset( $_GET['group'] ) ? sanitize_text_field( $_GET['group'] ) : 'all';
             ?>
                 <p>
                     <label for="pig_plugin_group">
                         <strong><?php _e( 'Choose plugins group', 'pig' ); ?>:</strong>
                     </label>
                     <select name="my_meta_box_select" id="pig_plugin_group">
-                        <option value="all" <?php selected( $selected, 'all' ); ?>>All</option>
+                        <option value="all" <?php selected( $selected, 'all' ); ?>><?php _e( 'All', 'pig' ); ?></option>
                         <?php if ( $groups ) : ?>
                             <?php foreach ( $groups as $group ) : ?>
                                 <option value="<?php echo esc_attr( $group ); ?>" <?php selected( $selected, $group ); ?>><?php echo $group; ?></option>
