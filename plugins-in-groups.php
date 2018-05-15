@@ -143,6 +143,23 @@ if ( !class_exists( 'PIG_Plugin') ) {
                         unset( $groups[$key] );
                     }
                     update_option( 'pig_groups', serialize( $groups ) );
+                    
+                    $all_plugins = get_plugins();
+                    if ( $all_plugins ) {
+                        foreach ( $all_plugins as $plugin_name => $plugin_object ) {
+                            $groups = unserialize( get_option( 'pig_' . $plugin_name ) );
+                            if ( $groups ) {
+                                foreach ( $groups as $group ) {
+                                    if ( $group != $removed_group ) {
+                                        $new_groups[] = $group;
+                                    }
+                                }
+                                if ( $groups != $new_groups ) {
+                                    update_option( 'pig_' . $plugin_name, serialize( $new_groups ) );
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
