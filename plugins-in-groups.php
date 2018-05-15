@@ -45,7 +45,8 @@ if ( !class_exists( 'PIG_Plugin') ) {
                 update_option( 'pig_' . $plugin_file, serialize( $plugin_groups ) );
             }
             $current_groups = unserialize( get_option( 'pig_' . $plugin_file ) );
-            $return['all-groups'] = $groups;
+            $groups = array_diff( $groups, $current_groups );
+            $return['all-groups'] = array_values( $groups );
             $return['selected-groups'] = $current_groups;
             wp_send_json_success( $return );
         }
@@ -69,7 +70,8 @@ if ( !class_exists( 'PIG_Plugin') ) {
             }
             update_option( 'pig_' . $plugin_file, serialize( $new_groups ) );
             $current_groups = unserialize( get_option( 'pig_' . $plugin_file ) );
-            $return['all-groups'] = $groups;
+            $groups = array_diff( $groups, $current_groups );
+            $return['all-groups'] = array_values( $groups );
             $return['selected-groups'] = $current_groups;
             wp_send_json_success( $return );
         }
@@ -84,7 +86,6 @@ if ( !class_exists( 'PIG_Plugin') ) {
         
         /*
         * Plugins group section on the top of the plugins page
-        * @todo: 
         */
         public function select_group( $plugins_all ) {
             $groups = unserialize( get_option( 'pig_groups' ) );
@@ -108,11 +109,6 @@ if ( !class_exists( 'PIG_Plugin') ) {
                         <input type="submit" href="#" name="pig_add_new" id="pig_add_new" class="button button-primary" value="<?php _e( 'Add new group', 'pig' ); ?>"> <?php _e( 'or', 'pig' ); ?> <a href="#" name="pig_remove_group" id="pig_remove_group" class="button-secondary delete"><?php _e( 'Remove the current group', 'pig' ); ?></a>
                     </form>
                 </p>
-                <!--
-                <p id="pig-main-info">
-                    You can <a href="#"><?php _e( 'Add new group', 'pig' ); ?></a> <?php _e( 'or', 'pig' ); ?> <a href="#"><?php _e( 'Remove the current group', 'pig' ); ?></a>
-                </p>
-                -->
             <?php
         }
         
@@ -156,7 +152,9 @@ if ( !class_exists( 'PIG_Plugin') ) {
         public function plugin_links( $links, $file ) {
 
             $all_groups = unserialize( get_option( 'pig_groups' ) );
-            $all_groups_list = '<option value="All">' . __( 'All', 'pig' ) . '</option>';
+            $selected_groups = unserialize( get_option( 'pig_' . $file ) );
+            $all_groups_list = '<option disabled selected>' . __( 'Choose the group', 'pig' ) . '</option>';
+            $all_groups = array_diff( $all_groups, $selected_groups );
             if ( $all_groups ) {
                 foreach ( $all_groups as $group ) {
                     $all_groups_list .= '<option value="' . esc_attr( $group ) . '">' . $group . '</option>';
@@ -171,7 +169,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
             }
             $new_links = array(
                 'groups' => '
-                <a href="#" class="pig-add-to-group">' . __( 'Add to the group', 'pig' ) . '</a> <select class="pig-select-group" data-plugin-file="' . $file . '">' . $all_groups_list . '</select>
+                <select class="pig-select-group" data-plugin-file="' . $file . '">' . $all_groups_list . '</select>
                 <div class="tagchecklist selected-groups-list" data-plugin-file="' . $file . '">' . $groups_list . '</div>'
             );
             
