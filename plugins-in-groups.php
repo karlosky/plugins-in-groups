@@ -154,7 +154,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
             $all_groups = unserialize( get_option( 'pig_groups' ) );
             $selected_groups = unserialize( get_option( 'pig_' . $file ) );
             $all_groups_list = '<option disabled selected>' . __( 'Choose the group', 'pig' ) . '</option>';
-            $all_groups = array_diff( $all_groups, $selected_groups );
+            $all_groups = is_array( $selected_groups ) ? array_diff( $all_groups, $selected_groups ) : $all_groups;
             if ( $all_groups ) {
                 foreach ( $all_groups as $group ) {
                     $all_groups_list .= '<option value="' . esc_attr( $group ) . '">' . $group . '</option>';
