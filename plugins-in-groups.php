@@ -8,7 +8,7 @@
   Author URI: http://karlosky.pl
 */
 
-define( 'PIG_VERSION', '0.0.1' );
+define( 'PIG_VERSION', '1.0.0' );
 
 if ( !class_exists( 'PIG_Plugin') ) {
     
