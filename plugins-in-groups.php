@@ -17,6 +17,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
         public function __construct() {
             //hooks
             add_action( 'admin_enqueue_scripts', array( $this, 'add_scripts' ) );
+            add_action( 'admin_enqueue_scripts', array( $this, 'add_styles' ) );
             add_action( 'admin_init', array( $this, 'add_group' ) );
             add_action( 'admin_init', array( $this, 'remove_group' ) );
             add_action( 'pre_current_active_plugins', array( $this, 'select_group' ) );
@@ -26,6 +27,22 @@ if ( !class_exists( 'PIG_Plugin') ) {
             add_action( 'wp_ajax_reassign_from_group', array( $this, 'reassign_from_group' ) );
             
             add_filter( 'all_plugins', array( $this, 'filter_plugins' ) );
+        }
+        
+        
+        /*
+        * Add JS script on the backend
+        */
+        public function add_scripts() {
+            wp_enqueue_script( 'pig-script', plugin_dir_url( __FILE__ ) . 'admin/js/pig-script.js', array( 'jquery' ), time() );
+        }
+        
+        
+        /*
+        * Add CSS on the backend
+        */
+        public function add_styles() {
+            wp_enqueue_style( 'pig-style', plugin_dir_url( __FILE__ ) . 'admin/css/pig-style.css' );
         }
         
         
@@ -76,13 +93,6 @@ if ( !class_exists( 'PIG_Plugin') ) {
             $return['all-groups'] = array_values( $groups );
             $return['selected-groups'] = $current_groups;
             wp_send_json_success( $return );
-        }
-        
-        /*
-        * Add JS script on the backend
-        */
-        public function add_scripts() {
-            wp_enqueue_script( 'pig-script', plugin_dir_url( __FILE__ ) . 'admin/js/pig-script.js', array( 'jquery' ), time() );
         }
         
         
@@ -200,15 +210,14 @@ if ( !class_exists( 'PIG_Plugin') ) {
             $groups_list = '';
             if ( $current_groups ) {
                 foreach ( $current_groups as $group ) {
-                    $groups_list .= '<span class="pig-reassign"><a id="post_tag-check-num-0" class="ntdelbutton pig-reassign" tabindex="0" data-pig-group="' . $group . '" data-pig-plugin="' . $file . '">X</a>&nbsp' . $group . '</span>';
+                    $groups_list .= '<span class="pig-reassign"><a class="ntdelbutton pig-reassign" data-pig-group="' . $group . '" data-pig-plugin="' . $file . '">X</a>&nbsp' . $group . '</span>';
                 }
             }
             $new_links = array(
                 'groups' => '
                 <select class="pig-select-group" data-plugin-file="' . $file . '">' . $all_groups_list . '</select>
-                <div class="tagchecklist selected-groups-list" data-plugin-file="' . $file . '">' . $groups_list . '</div>'
+                <div class="selected-groups-list" data-plugin-file="' . $file . '">' . $groups_list . '</div>'
             );
-            
             $links = array_merge( $links, $new_links );
             
             return $links;
