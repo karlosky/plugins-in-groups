@@ -41,7 +41,7 @@ jQuery(document).ready(function() {
             var list = '';
             var options = '<option disabled selected>Choose the group</option>';
             for (var i = 0, len = selected.length; i < len; i++) {
-                list = list + '<span class="pig-reassign"><a id="post_tag-check-num-0" class="ntdelbutton" tabindex="0" data-pig-group="' + selected[i] + '" data-pig-plugin="' + plugin_file + '">X</a>&nbsp' + selected[i] + '</span>';
+                list = list + '<span class="pig-reassign"><a class="ntdelbutton" data-pig-group="' + selected[i] + '" data-pig-plugin="' + plugin_file + '">X</a>&nbsp' + selected[i] + '</span>';
             }
             jQuery(".selected-groups-list[data-plugin-file='" + plugin_file + "']").html(list);
             for (var i = 0, len = all_groups.length; i < len; i++) {
@@ -74,7 +74,7 @@ jQuery(document).ready(function() {
             var list = '';
             var options = '<option disabled selected>Choose the group</option>';
             for (var i = 0, len = selected.length; i < len; i++) {
-                list = list + '<span class="pig-reassign"><a id="post_tag-check-num-0" class="ntdelbutton" tabindex="0" data-pig-group="' + selected[i] + '" data-pig-plugin="' + plugin_file + '">X</a>&nbsp' + selected[i] + '</span>';
+                list = list + '<span class="pig-reassign"><a class="ntdelbutton" data-pig-group="' + selected[i] + '" data-pig-plugin="' + plugin_file + '">X</a>&nbsp' + selected[i] + '</span>';
             }
             jQuery(".selected-groups-list[data-plugin-file='" + plugin_file + "']").html(list);
             for (var i = 0, len = all_groups.length; i < len; i++) {
