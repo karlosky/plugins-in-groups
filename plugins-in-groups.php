@@ -57,7 +57,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
             check_ajax_referer( 'assign-to-group', 'security' );
             $plugin_groups = array();
             $plugin_groups = unserialize( get_option( 'pig_' . $plugin_file ) );
-            if ( ( array_search( $selected_group, $plugin_groups ) ) == false ) {
+            if ( is_array( $plugin_groups ) && ( array_search( $selected_group, $plugin_groups ) ) == false || !is_array( $plugin_groups ) ) {
                 $plugin_groups[] = $selected_group;
                 $plugin_groups = array_unique( $plugin_groups );
                 update_option( 'pig_' . $plugin_file, serialize( $plugin_groups ) );
@@ -161,7 +161,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
                     $groups = array();
                     $groups = unserialize( get_option( 'pig_groups' ) );
                     if ( $removed_group !== 'all' ) {
-                        if ( ( $key = array_search( $removed_group, $groups ) ) !== false ) {
+                        if ( is_array( $groups ) && ( $key = array_search( $removed_group, $groups ) ) !== false ) {
                             unset( $groups[$key] );
                         }
                         $groups = array_unique( $groups );
@@ -232,9 +232,11 @@ if ( !class_exists( 'PIG_Plugin') ) {
                 $filtered_plugins = array();
                 foreach ( $all_plugins as $name => $plugin ) {
                     $current_plugin_groups = unserialize( get_option( 'pig_' . $name ) );
-                    foreach ( $current_plugin_groups as $plugin_group ) {
-                        if ( $plugin_group == $active_group ) {
-                            $filtered_plugins[$name] = $plugin;
+                    if ( $current_plugin_groups ) {
+                        foreach ( $current_plugin_groups as $plugin_group ) {
+                            if ( $plugin_group == $active_group ) {
+                                $filtered_plugins[$name] = $plugin;
+                            }
                         }
                     }
                 }
@@ -247,6 +249,8 @@ if ( !class_exists( 'PIG_Plugin') ) {
     /*
     * Create plugin instance
     */
-    $pig = new PIG_Plugin;
+    if ( is_admin() ) {
+        $pig = new PIG_Plugin;
+    }
 
 }
