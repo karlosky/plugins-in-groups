@@ -21,7 +21,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
             add_action( 'admin_init', array( $this, 'add_group' ) );
             add_action( 'admin_init', array( $this, 'remove_group' ) );
             add_action( 'pre_current_active_plugins', array( $this, 'select_group' ) );
-            add_filter( 'plugin_row_meta', array( $this, 'plugin_links' ), 10, 2 );
+            add_filter( 'plugin_row_meta', array( $this, 'plugin_links' ), 99, 2 );
             //ajax functions
             add_action( 'wp_ajax_assign_to_group', array( $this, 'assign_to_group' ) );
             add_action( 'wp_ajax_reassign_from_group', array( $this, 'reassign_from_group' ) );
