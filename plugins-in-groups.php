@@ -42,6 +42,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
             $plugin_groups = unserialize( get_option( 'pig_' . $plugin_file ) );
             if ( ( array_search( $selected_group, $plugin_groups ) ) == false ) {
                 $plugin_groups[] = $selected_group;
+                $plugin_groups = array_unique( $plugin_groups );
                 update_option( 'pig_' . $plugin_file, serialize( $plugin_groups ) );
             }
             $current_groups = unserialize( get_option( 'pig_' . $plugin_file ) );
@@ -68,6 +69,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
                     $new_groups[] = $group; 
                 }
             }
+            $new_groups = array_unique( $new_groups );
             update_option( 'pig_' . $plugin_file, serialize( $new_groups ) );
             $current_groups = unserialize( get_option( 'pig_' . $plugin_file ) );
             $groups = array_diff( $groups, $current_groups );
@@ -128,6 +130,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
                     $groups = array();
                     $groups = unserialize( get_option( 'pig_groups' ) );
                     $groups[] = $new_group;
+                    $groups = array_unique( $groups );
                     update_option( 'pig_groups', serialize( $groups ) );
                 } else {
                     die();
@@ -151,6 +154,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
                         if ( ( $key = array_search( $removed_group, $groups ) ) !== false ) {
                             unset( $groups[$key] );
                         }
+                        $groups = array_unique( $groups );
                         update_option( 'pig_groups', serialize( $groups ) );
                         
                         $all_plugins = get_plugins();
@@ -164,6 +168,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
                                         }
                                     }
                                     if ( $groups !== $new_groups ) {
+                                        $new_groups = array_unique( $new_groups );
                                         update_option( 'pig_' . $plugin_name, serialize( $new_groups ) );
                                     }
                                 }
