@@ -37,7 +37,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
             $groups = unserialize( get_option( 'pig_groups' ) );
             $plugin_file = sanitize_text_field( $_POST['plugin-file'] );
             $selected_group = sanitize_text_field( $_POST['selected-group'] );
-            
+            check_ajax_referer( 'assign-to-group', 'security' );
             $plugin_groups = array();
             $plugin_groups = unserialize( get_option( 'pig_' . $plugin_file ) );
             if ( ( array_search( $selected_group, $plugin_groups ) ) == false ) {
@@ -59,7 +59,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
             $groups = unserialize( get_option( 'pig_groups' ) );
             $plugin_file = sanitize_text_field( $_POST['plugin-file'] );
             $selected_group = sanitize_text_field( $_POST['selected-group'] );
-            
+            check_ajax_referer( 'reassign-from-group', 'security' );
             $plugin_groups = array();
             $plugin_groups = unserialize( get_option( 'pig_' . $plugin_file ) );
             $new_groups = array();
@@ -106,10 +106,14 @@ if ( !class_exists( 'PIG_Plugin') ) {
                 </p>
                 <p id="pig-new-group-info">
                     <form method="post">
+                        <input type="hidden" name="pig-add-group-nonce" id="pig-add-group-nonce" value="<?php echo wp_create_nonce( 'add-group' ) ?>">
                         <input type="text" placeholder="<?php _e( 'New group name', 'pig' ); ?>" name="pig_new_group_name" id="pig_new_group_name" />
                         <input type="submit" href="#" name="pig_add_new" id="pig_add_new" class="button button-primary" value="<?php _e( 'Add new group', 'pig' ); ?>"> <?php _e( 'or', 'pig' ); ?> <a href="#"<?php if ( $selected == 'all' ) : ?> class="button-secondary delete disabled" <?php else : ?> name="pig_remove_group" id="pig_remove_group" class="button-secondary delete"<?php endif; ?>><?php _e( 'Remove the current group', 'pig' ); ?></a>
                     </form>
                 </p>
+                <input type="hidden" id="pig-assign-to-group-nonce" value="<?php echo wp_create_nonce( 'assign-to-group' ) ?>">
+                <input type="hidden" id="pig-reassign-from-group-nonce" value="<?php echo wp_create_nonce( 'reassign-from-group' ) ?>">
+                <input type="hidden" name="pig-remove-group-nonce" id="pig-remove-group-nonce" value="<?php echo wp_create_nonce( 'remove-group' ) ?>">
             <?php
         }
         
@@ -119,11 +123,15 @@ if ( !class_exists( 'PIG_Plugin') ) {
         */
         public function add_group() {
             if ( isset( $_POST['pig_new_group_name'] ) && $_POST['pig_new_group_name'] ) {
-                $new_group = sanitize_text_field( $_POST['pig_new_group_name'] );
-                $groups = array();
-                $groups = unserialize( get_option( 'pig_groups' ) );
-                $groups[] = $new_group;
-                update_option( 'pig_groups', serialize( $groups ) );
+                if ( wp_verify_nonce( $_REQUEST['pig-add-group-nonce'], 'add-group' ) ) {
+                    $new_group = sanitize_text_field( $_POST['pig_new_group_name'] );
+                    $groups = array();
+                    $groups = unserialize( get_option( 'pig_groups' ) );
+                    $groups[] = $new_group;
+                    update_option( 'pig_groups', serialize( $groups ) );
+                } else {
+                    die();
+                }
             }
         }
         
@@ -135,31 +143,35 @@ if ( !class_exists( 'PIG_Plugin') ) {
         */
         public function remove_group() {
             if ( isset( $_GET['pig_remove_group_name'] ) && $_GET['pig_remove_group_name'] ) {
-                $removed_group = sanitize_text_field( $_GET['pig_remove_group_name'] );
-                $groups = array();
-                $groups = unserialize( get_option( 'pig_groups' ) );
-                if ( $removed_group !== 'all' ) {
-                    if ( ( $key = array_search( $removed_group, $groups ) ) !== false ) {
-                        unset( $groups[$key] );
-                    }
-                    update_option( 'pig_groups', serialize( $groups ) );
-                    
-                    $all_plugins = get_plugins();
-                    if ( $all_plugins ) {
-                        foreach ( $all_plugins as $plugin_name => $plugin_object ) {
-                            $groups = unserialize( get_option( 'pig_' . $plugin_name ) );
-                            if ( $groups ) {
-                                foreach ( $groups as $group ) {
-                                    if ( $group != $removed_group ) {
-                                        $new_groups[] = $group;
+                if ( wp_verify_nonce( $_REQUEST['pig-remove-group-nonce'], 'remove-group' ) ) {
+                    $removed_group = sanitize_text_field( $_GET['pig_remove_group_name'] );
+                    $groups = array();
+                    $groups = unserialize( get_option( 'pig_groups' ) );
+                    if ( $removed_group !== 'all' ) {
+                        if ( ( $key = array_search( $removed_group, $groups ) ) !== false ) {
+                            unset( $groups[$key] );
+                        }
+                        update_option( 'pig_groups', serialize( $groups ) );
+                        
+                        $all_plugins = get_plugins();
+                        if ( $all_plugins ) {
+                            foreach ( $all_plugins as $plugin_name => $plugin_object ) {
+                                $groups = unserialize( get_option( 'pig_' . $plugin_name ) );
+                                if ( $groups ) {
+                                    foreach ( $groups as $group ) {
+                                        if ( $group != $removed_group ) {
+                                            $new_groups[] = $group;
+                                        }
                                     }
-                                }
-                                if ( $groups != $new_groups ) {
-                                    update_option( 'pig_' . $plugin_name, serialize( $new_groups ) );
+                                    if ( $groups != $new_groups ) {
+                                        update_option( 'pig_' . $plugin_name, serialize( $new_groups ) );
+                                    }
                                 }
                             }
                         }
                     }
+                } else {
+                    die();
                 }
             }
         }

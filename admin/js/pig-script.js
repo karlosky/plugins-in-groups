@@ -5,8 +5,9 @@ jQuery(document).ready(function() {
     */
     jQuery('#pig_remove_group').on('click', function(v) {
         if (confirm("Do you really want to remove this group?")){
+            var security = jQuery('#pig-remove-group-nonce').val();
             var current = jQuery('#pig_plugin_group').val();
-            window.location.replace("?pig_remove_group_name=" + current);
+            window.location.replace("?pig_remove_group_name=" + current + '&pig-remove-group-nonce=' + security);
         }
     });
     
@@ -26,10 +27,12 @@ jQuery(document).ready(function() {
     jQuery('.pig-select-group').on('change', function () {
         var current_select = jQuery(this);
         var plugin_file = current_select.attr('data-plugin-file');
+        var security = jQuery('#pig-assign-to-group-nonce').val();
         var data = {
 			'action': 'assign_to_group',
 			'plugin-file': plugin_file,
-            'selected-group': current_select.val()
+            'selected-group': current_select.val(),
+            'security': security
 		};
         
         jQuery.post(ajaxurl, data, function(response) {
@@ -57,10 +60,12 @@ jQuery(document).ready(function() {
         var plugin_file = jQuery(this).attr('data-pig-plugin');
         var group = jQuery(this).attr('data-pig-group');
         var current_select = jQuery('select[data-plugin-file="' + plugin_file + '"]');
+        var security = jQuery('#pig-reassign-from-group-nonce').val();
         var data = {
 			'action': 'reassign_from_group',
 			'plugin-file': plugin_file,
-            'selected-group': group
+            'selected-group': group,
+            'security': security
 		};
         
         jQuery.post(ajaxurl, data, function(response) {
