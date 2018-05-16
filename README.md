@@ -9,3 +9,4 @@ It allows to keep your plugins in the groups and sort them by the tags. You can 
 2. Open plugins page.
 3. Add the new groups.
 4. Assign the plugins to the groups.
+5. You can filter your plugins by the created tags.
