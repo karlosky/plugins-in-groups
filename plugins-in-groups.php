@@ -2,7 +2,7 @@
 /*
   Plugin Name: Plugins In Groups
   Description: Keep your plugins in the groups. Sort them by tags. Keep your plugins page clear and manage them in bulk.
-  Version: 0.0.1
+  Version: 1.0.0
   Description: 
   Author: Karol Sawka
   Author URI: http://karlosky.pl
@@ -159,11 +159,11 @@ if ( !class_exists( 'PIG_Plugin') ) {
                                 $groups = unserialize( get_option( 'pig_' . $plugin_name ) );
                                 if ( $groups ) {
                                     foreach ( $groups as $group ) {
-                                        if ( $group != $removed_group ) {
+                                        if ( $group !== $removed_group ) {
                                             $new_groups[] = $group;
                                         }
                                     }
-                                    if ( $groups != $new_groups ) {
+                                    if ( $groups !== $new_groups ) {
                                         update_option( 'pig_' . $plugin_name, serialize( $new_groups ) );
                                     }
                                 }
