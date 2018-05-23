@@ -243,6 +243,15 @@ if ( !class_exists( 'PIG_Plugin') ) {
             }
             return $all_plugins;
         }
+		
+		/*
+		* Keep filters on the native WP plugins groups
+		*/
+		public function keep_filters() {
+			if ( isset( $_GET['group'] ) ) {
+				// @todo
+			}
+		}
     }
     
     /*
