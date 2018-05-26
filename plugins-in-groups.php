@@ -20,18 +20,20 @@ if ( !class_exists( 'PIG_Plugin') ) {
             add_action( 'admin_init', array( $this, 'add_group' ) );
             add_action( 'admin_init', array( $this, 'remove_group' ) );
             add_action( 'pre_current_active_plugins', array( $this, 'select_group' ) );
+			
             add_filter( 'plugin_row_meta', array( $this, 'plugin_links' ), 99, 2 );
+			add_filter( 'all_plugins', array( $this, 'filter_plugins' ) );
+			add_filter( 'views_plugins', array( $this, 'keep_filters' ) );
             //ajax functions
             add_action( 'wp_ajax_assign_to_group', array( $this, 'assign_to_group' ) );
             add_action( 'wp_ajax_reassign_from_group', array( $this, 'reassign_from_group' ) );
-            
-            add_filter( 'all_plugins', array( $this, 'filter_plugins' ) );
-			add_filter( 'views_plugins', array( $this, 'keep_filters' ) );
         }
         
         
         /*
         * Add JS script on the backend
+		*
+		* @since 0.0.1
         */
         public function add_scripts() {
             wp_enqueue_script( 'pig-script', plugin_dir_url( __FILE__ ) . 'admin/js/pig-script.js', array( 'jquery' ), time() );
@@ -40,6 +42,8 @@ if ( !class_exists( 'PIG_Plugin') ) {
         
         /*
         * Add CSS on the backend
+		*
+		* @since 0.0.1
         */
         public function add_styles() {
             wp_enqueue_style( 'pig-style', plugin_dir_url( __FILE__ ) . 'admin/css/pig-style.css' );
@@ -49,6 +53,8 @@ if ( !class_exists( 'PIG_Plugin') ) {
         /*
         * Ajax function.
         * Add plugin to the group
+		*
+		* @since 0.0.1
         */
         public function assign_to_group() {
             $groups = unserialize( get_option( 'pig_groups' ) );
@@ -72,6 +78,8 @@ if ( !class_exists( 'PIG_Plugin') ) {
         /*
         * Ajax function.
         * Remove plugin from the group
+		*
+		* @since 0.0.1
         */
         public function reassign_from_group() {
             $groups = unserialize( get_option( 'pig_groups' ) );
@@ -98,6 +106,8 @@ if ( !class_exists( 'PIG_Plugin') ) {
         
         /*
         * Plugins group section on the top of the plugins page
+		*
+		* @since 0.0.1
         */
         public function select_group( $plugins_all ) {
             $groups = unserialize( get_option( 'pig_groups' ) );
@@ -132,6 +142,8 @@ if ( !class_exists( 'PIG_Plugin') ) {
         
         /*
         * Create new plugins group
+		*
+		* @since 0.0.1
         */
         public function add_group() {
             if ( isset( $_POST['pig_new_group_name'] ) && $_POST['pig_new_group_name'] ) {
@@ -151,8 +163,8 @@ if ( !class_exists( 'PIG_Plugin') ) {
         
         /*
         * Remove plugins group
-        * @todo: 
-        * 1. remove group assigned to the plugins
+        * 
+		* @since 0.0.1
         */
         public function remove_group() {
             if ( isset( $_GET['pig_remove_group_name'] ) && $_GET['pig_remove_group_name'] ) {
@@ -194,6 +206,8 @@ if ( !class_exists( 'PIG_Plugin') ) {
         
         /*
         * Add groups section on the plugin row on the plugins page
+		*
+		* @since 0.0.1
         */
         public function plugin_links( $links, $file ) {
 
@@ -225,6 +239,8 @@ if ( !class_exists( 'PIG_Plugin') ) {
         
         /*
         * Filter plugins on the plugins list
+		*
+		* @since 0.0.1
         */
         public function filter_plugins( $all_plugins ) {
             if ( isset( $_GET['group'] ) ) {
@@ -247,6 +263,8 @@ if ( !class_exists( 'PIG_Plugin') ) {
 		
 		/*
 		* Keep filters on the native WP plugins groups
+		*
+		* @since 1.0.1
 		*/
 		public function keep_filters( $views ) {
 			if ( isset( $_GET['group'] ) ) {
