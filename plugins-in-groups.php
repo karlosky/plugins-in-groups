@@ -26,6 +26,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
             add_action( 'wp_ajax_reassign_from_group', array( $this, 'reassign_from_group' ) );
             
             add_filter( 'all_plugins', array( $this, 'filter_plugins' ) );
+			add_filter( 'views_plugins', array( $this, 'keep_filters' ) );
         }
         
         
@@ -247,10 +248,13 @@ if ( !class_exists( 'PIG_Plugin') ) {
 		/*
 		* Keep filters on the native WP plugins groups
 		*/
-		public function keep_filters() {
+		public function keep_filters( $views ) {
 			if ( isset( $_GET['group'] ) ) {
-				// @todo
+				$group = sanitize_text_field( $_GET['group'] );
+				$views = str_replace( 'plugins.php?', 'plugins.php?group=' . $group . '&', $views );
+				
 			}
+			return $views;
 		}
     }
     
