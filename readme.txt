@@ -39,12 +39,20 @@ Yes! You can create the groups for all the website in your WP network.
 
 == Changelog ==
 
-= 1.0 =
+= 1.0.1 =
+
+* Filter by groups with the plugins views links.
+
+= 1.0.0 =
 
 * Initial Release.
 
 == Upgrade Notice ==
 
-= 1.0 =
+= 1.0.1 =
+
+* Filter by groups with the plugins views links.
+
+= 1.0.0 =
 
 * Initial Release.
