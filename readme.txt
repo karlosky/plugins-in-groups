@@ -5,7 +5,7 @@ Tags: plugins, plugins groups, plugin group, plugin groups, plugin filter, plugi
 Requires at least: 3.9
 Tested up to: 4.9.5
 Requires PHP: 5.0
-Stable tag: 1.0.0
+Stable tag: 1.0.2
 License: GNU General Public License v3.0
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -39,6 +39,10 @@ Yes! You can create the groups for all the website in your WP network.
 
 == Changelog ==
 
+= 1.0.2 =
+
+* '&' in the group name fixed
+
 = 1.0.1 =
 
 * Filter by groups with the plugins views links.
@@ -48,6 +52,10 @@ Yes! You can create the groups for all the website in your WP network.
 * Initial Release.
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+
+* '&' in the group name fixed
 
 = 1.0.1 =
 

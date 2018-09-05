@@ -1,10 +1,10 @@
 <?php
-/*
+/**
   Plugin Name: Plugins In Groups
   Description: Keep your plugins in the groups. Sort them by tags. Keep your plugins page clear and manage them in bulk.
-  Version: 1.0.1
+  Version: 1.0.2
   Author: Karol Sawka
-  Author URI: http://karlosky.pl
+  Author URI: http://karlosky.pro
 */
 
 define( 'PIG_VERSION', '1.0.1' );
@@ -20,41 +20,41 @@ if ( !class_exists( 'PIG_Plugin') ) {
             add_action( 'admin_init', array( $this, 'add_group' ) );
             add_action( 'admin_init', array( $this, 'remove_group' ) );
             add_action( 'pre_current_active_plugins', array( $this, 'select_group' ) );
-			
+
             add_filter( 'plugin_row_meta', array( $this, 'plugin_links' ), 99, 2 );
-			add_filter( 'all_plugins', array( $this, 'filter_plugins' ) );
-			add_filter( 'views_plugins', array( $this, 'keep_filters' ) );
+            add_filter( 'all_plugins', array( $this, 'filter_plugins' ) );
+            add_filter( 'views_plugins', array( $this, 'keep_filters' ) );
             //ajax functions
             add_action( 'wp_ajax_assign_to_group', array( $this, 'assign_to_group' ) );
             add_action( 'wp_ajax_reassign_from_group', array( $this, 'reassign_from_group' ) );
         }
         
         
-        /*
+        /**
         * Add JS script on the backend
-		*
-		* @since 0.0.1
+        *
+        * @since 0.0.1
         */
         public function add_scripts() {
             wp_enqueue_script( 'pig-script', plugin_dir_url( __FILE__ ) . 'admin/js/pig-script.js', array( 'jquery' ), time() );
         }
         
         
-        /*
+        /**
         * Add CSS on the backend
-		*
-		* @since 0.0.1
+        *
+        * @since 0.0.1
         */
         public function add_styles() {
             wp_enqueue_style( 'pig-style', plugin_dir_url( __FILE__ ) . 'admin/css/pig-style.css' );
         }
         
         
-        /*
+        /**
         * Ajax function.
         * Add plugin to the group
-		*
-		* @since 0.0.1
+        *
+        * @since 0.0.1
         */
         public function assign_to_group() {
             $groups = unserialize( get_option( 'pig_groups' ) );
@@ -75,11 +75,11 @@ if ( !class_exists( 'PIG_Plugin') ) {
             wp_send_json_success( $return );
         }
         
-        /*
+        /**
         * Ajax function.
         * Remove plugin from the group
-		*
-		* @since 0.0.1
+        *
+        * @since 0.0.1
         */
         public function reassign_from_group() {
             $groups = unserialize( get_option( 'pig_groups' ) );
@@ -104,10 +104,10 @@ if ( !class_exists( 'PIG_Plugin') ) {
         }
         
         
-        /*
+        /**
         * Plugins group section on the top of the plugins page
-		*
-		* @since 0.0.1
+        *
+        * @since 0.0.1
         */
         public function select_group( $plugins_all ) {
             $groups = unserialize( get_option( 'pig_groups' ) );
@@ -121,7 +121,7 @@ if ( !class_exists( 'PIG_Plugin') ) {
                         <option value="all" <?php selected( $selected, 'all' ); ?>><?php _e( 'All', 'pig' ); ?></option>
                         <?php if ( $groups ) : ?>
                             <?php foreach ( $groups as $group ) : ?>
-                                <option value="<?php echo esc_attr( $group ); ?>" <?php selected( $selected, $group ); ?>><?php echo $group; ?></option>
+                                <option value="<?php echo esc_attr( urlencode( $group ) ); ?>" <?php selected( $selected, $group ); ?>><?php echo $group; ?></option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
@@ -140,10 +140,10 @@ if ( !class_exists( 'PIG_Plugin') ) {
         }
         
         
-        /*
+        /**
         * Create new plugins group
-		*
-		* @since 0.0.1
+        *
+        * @since 0.0.1
         */
         public function add_group() {
             if ( isset( $_POST['pig_new_group_name'] ) && $_POST['pig_new_group_name'] ) {
@@ -161,10 +161,10 @@ if ( !class_exists( 'PIG_Plugin') ) {
         }
         
         
-        /*
+        /**
         * Remove plugins group
         * 
-		* @since 0.0.1
+        * @since 0.0.1
         */
         public function remove_group() {
             if ( isset( $_GET['pig_remove_group_name'] ) && $_GET['pig_remove_group_name'] ) {
@@ -204,10 +204,10 @@ if ( !class_exists( 'PIG_Plugin') ) {
         }
         
         
-        /*
+        /**
         * Add groups section on the plugin row on the plugins page
-		*
-		* @since 0.0.1
+        *
+        * @since 0.0.1
         */
         public function plugin_links( $links, $file ) {
 
@@ -237,10 +237,10 @@ if ( !class_exists( 'PIG_Plugin') ) {
             return $links;
         } 
         
-        /*
+        /**
         * Filter plugins on the plugins list
-		*
-		* @since 0.0.1
+        *
+        * @since 0.0.1
         */
         public function filter_plugins( $all_plugins ) {
             if ( isset( $_GET['group'] ) ) {
@@ -260,22 +260,22 @@ if ( !class_exists( 'PIG_Plugin') ) {
             }
             return $all_plugins;
         }
-		
-		/*
-		* Keep filters on the native WP plugins groups
-		*
-		* @since 1.0.1
-		*/
-		public function keep_filters( $views ) {
-			if ( isset( $_GET['group'] ) ) {
-				$group = sanitize_text_field( $_GET['group'] );
-				$views = str_replace( 'plugins.php?', 'plugins.php?group=' . $group . '&', $views );
-			}
-			return $views;
-		}
+        
+        /**
+        * Keep filters on the native WP plugins groups
+        *
+        * @since 1.0.1
+        */
+        public function keep_filters( $views ) {
+            if ( isset( $_GET['group'] ) ) {
+                $group = sanitize_text_field( $_GET['group'] );
+                $views = str_replace( 'plugins.php?', 'plugins.php?group=' . $group . '&', $views );
+            }
+            return $views;
+        }
     }
     
-    /*
+    /**
     * Create plugin instance
     */
     if ( is_admin() ) {
