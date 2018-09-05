@@ -7,7 +7,7 @@
   Author URI: http://karlosky.pro
 */
 
-define( 'PIG_VERSION', '1.0.1' );
+define( 'PIG_VERSION', '1.0.2' );
 
 if ( !class_exists( 'PIG_Plugin') ) {
     
